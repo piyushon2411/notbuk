@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "NotBuk",
+  "version": "1.0",
+  "description": "A simple note editor in your new tab.",
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "permissions": [
+    "storage",
+    "contextMenus",
+    "activeTab",
+    "scripting",
+    "tabs"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
