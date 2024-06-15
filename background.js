@@ -1,46 +1,37 @@
+// Event listener for when the extension is installed
 chrome.runtime.onInstalled.addListener(() => {
-    console.log('Extension installed and context menu created.');
-    chrome.contextMenus.create({
-      id: 'saveText',
-      title: 'Save selected text in Notbuk',
-      contexts: ['selection']
-    });
+  // Create a context menu item
+  chrome.contextMenus.create({
+    id: 'saveText',
+    title: 'Save selected text in Notbuk',
+    contexts: ['selection'] // Only show the context menu when text is selected
   });
-  
-  chrome.contextMenus.onClicked.addListener((info, tab) => {
-    console.log('Context menu clicked.');
-    if (info.menuItemId === 'saveText') {
-      console.log('Saving selected text:', info.selectionText);
-      chrome.storage.local.get(['notes'], (result) => {
-        let newNote = result.notes ? result.notes + '\n' + info.selectionText : info.selectionText;
-        console.log('New note content:', newNote);
-        chrome.storage.local.set({ notes: newNote }, () => {
-          console.log('Notes saved to local storage.');
-          chrome.tabs.query({ url: "chrome://newtab/" }, (tabs) => {
-            tabs.forEach((tab) => {
-              console.log('Injecting content script into tab:', tab.id);
-              chrome.scripting.executeScript({
-                target: { tabId: tab.id },
-                func: appendText,
-                args: [info.selectionText]
-              }).then(() => {
-                console.log('Content script injected, text appended.');
-              }).catch(err => console.error('Failed to inject script:', err));
+});
+
+// Event listener for context menu item clicks
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  // Check if the clicked menu item is 'saveText'
+  if (info.menuItemId === 'saveText') {
+    // Retrieve existing notes from local storage
+    chrome.storage.local.get(['notes'], (result) => {
+      // Append the selected text to existing notes or create new notes
+      let newNote = result.notes ? result.notes + '\n' + info.selectionText : info.selectionText;
+      // Save the updated notes back to local storage
+      chrome.storage.local.set({ notes: newNote }, () => {
+        // Query for all tabs with the URL 'chrome://newtab/'
+        chrome.tabs.query({ url: "chrome://newtab/" }, (tabs) => {
+          // Inject the content script to append text in each tab
+          tabs.forEach((tab) => {
+            chrome.scripting.executeScript({
+              target: { tabId: tab.id },
+              files: ['content.js'] // Ensure the content script is injected
+            }, () => {
+              // Send a message to the content script to append the text
+              chrome.tabs.sendMessage(tab.id, { action: 'appendText', text: info.selectionText });
             });
           });
         });
       });
-    }
-  });
-  
-  function appendText(selectedText) {
-    let editor = document.getElementById('editor');
-    if (editor) {
-      console.log('Appending text to editor:', selectedText);
-      editor.value += '\n' + selectedText;
-      chrome.storage.local.set({ notes: editor.value });
-    } else {
-      console.error('Editor not found.');
-    }
+    });
   }
-  
+});

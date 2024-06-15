@@ -4,16 +4,20 @@
   "version": "1.0",
   "description": "A simple note editor in your new tab.",
   "chrome_url_overrides": {
-    "newtab": "index.html"
+    "newtab": "index.html" // Override the new tab page with index.html
   },
   "permissions": [
-    "storage",
-    "contextMenus",
-    "activeTab",
-    "scripting",
-    "tabs"
+    "storage", // Permission to use local storage
+    "contextMenus", // Permission to create context menus
+    "activeTab", // Permission to access the currently active tab
+    "scripting", // Permission to execute scripts
+    "tabs" // Permission to interact with browser tabs
+  ],
+  "host_permissions": [
+    "http://*/", // Permission to access all HTTP sites
+    "https://*/" // Permission to access all HTTPS sites
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js" // Specify the background script
   }
 }
