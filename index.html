@@ -4,7 +4,6 @@
   <title>NotBuk</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* Basic styling for the body */
     body {
       font-family: 'Roboto', sans-serif;
       margin: 0;
@@ -17,17 +16,14 @@
       background-color: rgba(245, 166, 35, .3);
       transition: background-color 0.3s ease;
     }
-    /* Dark mode background color */
     body.dark-mode {
       background-color: #333;
     }
-    /* Styling for the text editor */
     #editor {
       width: 70%;
-      height: 80vh;
+      height: 70vh;
       padding: 15px;
       box-sizing: border-box;
-      border: none;
       font-size: 16px;
       background-color: transparent;
       color: #000;
@@ -35,12 +31,36 @@
       outline: none;
       caret-color: black;
     }
-    /* Dark mode styling for the text editor */
     #editor.dark-mode {
       color: #fff;
       caret-color: white;
     }
-    /* Styling for the dark mode toggle container */
+    .menu-container {
+      position: fixed;
+      bottom: 50px;
+      left: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .menu-button {
+      font-size: 24px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      outline: none;
+    }
+    .formatting-menu {
+      display: none;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-top: 10px;
+    }
+    .formatting-menu button, .formatting-menu select {
+      padding: 5px 10px;
+      margin: 5px 0;
+      font-size: 14px;
+    }
     .toggle-container {
       position: fixed;
       bottom: 10px;
@@ -48,25 +68,21 @@
       display: flex;
       align-items: center;
     }
-    /* Styling for the toggle labels */
     .toggle-label {
       font-size: 16px;
       margin: 0 10px;
     }
-    /* Styling for the switch */
     .switch {
       position: relative;
       display: inline-block;
       width: 60px;
       height: 34px;
     }
-    /* Hide the default checkbox */
     .switch input {
       opacity: 0;
       width: 0;
       height: 0;
     }
-    /* Styling for the slider */
     .slider {
       position: absolute;
       cursor: pointer;
@@ -78,7 +94,6 @@
       transition: .4s;
       border-radius: 34px;
     }
-    /* Styling for the slider before element */
     .slider:before {
       position: absolute;
       content: "";
@@ -90,20 +105,29 @@
       transition: .4s;
       border-radius: 50%;
     }
-    /* Change background color when the switch is checked */
     input:checked + .slider {
       background-color: #666;
     }
-    /* Move the slider before element when the switch is checked */
     input:checked + .slider:before {
       transform: translateX(26px);
     }
   </style>
 </head>
 <body>
-  <!-- Text editor for writing notes -->
-  <textarea id="editor" placeholder="Write here ..."></textarea>
-  <!-- Container for the dark mode toggle switch -->
+  <div id="editor" contenteditable="true" placeholder="Write here ..."></div>
+  <div class="menu-container">
+    <button class="menu-button">&#9776;</button>
+    <div class="formatting-menu" id="formattingMenu">
+      <button id="boldBtn">Bold</button>
+      <button id="italicBtn">Italic</button>
+      <button id="underlineBtn">Underline</button>
+      <select id="fontSizeSelect">
+        <option value="1">Small</option>
+        <option value="3" selected>Medium</option>
+        <option value="5">Large</option>
+      </select>
+    </div>
+  </div>
   <div class="toggle-container">
     <span class="toggle-label">Light</span>
     <label class="switch">
@@ -112,7 +136,6 @@
     </label>
     <span class="toggle-label">Dark</span>
   </div>
-  <!-- Link to the external JavaScript file -->
   <script src="index.js"></script>
 </body>
 </html>
