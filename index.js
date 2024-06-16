@@ -10,23 +10,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const wordCount = document.getElementById('wordCount');
   const charCount = document.getElementById('charCount');
 
-  // Load saved notes and dark mode preference from local storage
-  chrome.storage.local.get(['notes', 'darkMode'], (result) => {
-    if (result.notes) {
-      editor.innerHTML = result.notes;
-      updateCounts();
-    }
+  // Load dark mode preference from local storage
+  chrome.storage.local.get(['darkMode'], (result) => {
     if (result.darkMode !== undefined) {
       document.body.classList.toggle('dark-mode', result.darkMode);
       editor.classList.toggle('dark-mode', result.darkMode);
       darkModeToggle.checked = result.darkMode;
     }
-  });
-
-  // Save notes to local storage whenever the editor content changes
-  editor.addEventListener('input', () => {
-    chrome.storage.local.set({ notes: editor.innerHTML });
-    updateCounts();
   });
 
   // Toggle dark mode and save the preference to local storage
@@ -45,8 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Function to execute formatting commands
   function formatText(command, value = null) {
     document.execCommand(command, false, value);
-    chrome.storage.local.set({ notes: editor.innerHTML });
-    updateCounts();
   }
 
   // Add event listeners to format buttons
@@ -63,4 +51,10 @@ document.addEventListener('DOMContentLoaded', () => {
     wordCount.textContent = `Words: ${words}`;
     charCount.textContent = `Characters: ${characters}`;
   }
+
+  // Update counts initially
+  updateCounts();
+
+  // Update counts on input
+  editor.addEventListener('input', updateCounts);
 });

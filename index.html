@@ -4,31 +4,38 @@
   <title>NotBuk</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="style.css">
+  <style>
+    body, div, button, select, option {
+      font-family: 'Roboto', sans-serif;
+    }
+  </style>
 </head>
 <body>
   <div id="editor" contenteditable="true" placeholder="Write here ..."></div>
   <div class="menu-container">
     <button class="menu-button">&#9776;</button>
     <div class="formatting-menu" id="formattingMenu">
-      <button id="boldBtn">Bold</button>
-      <button id="italicBtn">Italic</button>
-      <button id="underlineBtn">Underline</button>
+      <button id="boldBtn"><b>Bold</b></button>
+      <button id="italicBtn"><i>Italics</i></button>
+      <button id="underlineBtn"><u>Underline</u></button>
       <select id="fontSizeSelect">
-        <option value="1">Small</option>
-        <option value="3" selected>Medium</option>
-        <option value="5">Large</option>
+        <option value="1" style="font-size: 12px;">Small</option>
+        <option value="3" style="font-size: 16px;" selected>Medium</option>
+        <option value="5" style="font-size: 20px;">Large</option>
+        <option value="7" style="font-size: 24px;">Extra Large</option>
       </select>
+      <div class="separator"></div>
+      <div class="toggle-container">
+        <span class="toggle-label">Light</span>
+        <label class="switch">
+          <input type="checkbox" id="darkModeToggle">
+          <span class="slider"></span>
+        </label>
+        <span class="toggle-label">Dark</span>
+      </div>
     </div>
   </div>
-  <div class="toggle-container">
-    <span class="toggle-label">Light</span>
-    <label class="switch">
-      <input type="checkbox" id="darkModeToggle">
-      <span class="slider"></span>
-    </label>
-    <span class="toggle-label">Dark</span>
-  </div>
-  <div class="count-container"> 
+  <div class="count-container">
     <span id="wordCount">Words: 0</span>
     <span id="charCount">Characters: 0</span>
   </div>
