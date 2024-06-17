@@ -16,5 +16,12 @@
   "host_permissions": [
     "http://*/",
     "https://*/"
-  ]
+  ],
+  "icons": {
+    "16": "images/favicon.ico",
+    "32": "images/favicon.ico",
+    "48": "images/favicon.ico",
+    "64": "images/favicon.ico",
+    "128": "images/favicon.ico"
+  }
 }

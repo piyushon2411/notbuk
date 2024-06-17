@@ -29,6 +29,7 @@ body {
     resize: none;
     outline: none;
     caret-color: black;
+    line-height: 1.6; /* Add this line to increase line-height */
   }
   
   /* Dark mode styles for the editor */

@@ -57,4 +57,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Update counts on input
   editor.addEventListener('input', updateCounts);
+
+  // Save content to local storage
+  function saveContent() {
+    const content = editor.innerHTML;
+    chrome.storage.local.set({ noteContent: content });
+  }
+
+  // Call saveContent whenever the content changes
+  editor.addEventListener('input', saveContent);
+
+  // Load content from local storage
+  chrome.storage.local.get(['noteContent'], (result) => {
+    if (result.noteContent !== undefined) {
+      editor.innerHTML = result.noteContent;
+    }
+  });
 });
