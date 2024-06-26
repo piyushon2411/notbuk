@@ -1,206 +1,220 @@
 /* General body styles */
 body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: rgba(245, 166, 35, .3);
-    transition: background-color 0.3s ease;
-  }
-  
-  /* Dark mode styles for the body */
-  body.dark-mode {
-    background-color: #333;
-  }
-  
-  /* Editor styles */
-  #editor {
-    width: 70%;
-    height: 70vh;
-    padding: 15px;
-    box-sizing: border-box;
-    font-size: 16px;
-    background-color: transparent;
-    color: #000;
-    resize: none;
-    outline: none;
-    caret-color: black;
-    line-height: 1.6; /* Add this line to increase line-height */
-  }
-  
-  /* Dark mode styles for the editor */
-  #editor.dark-mode {
-    color: #fff;
-    caret-color: white;
-  }
-  
-  /* Menu container styles */
-  .menu-container {
-    position: fixed;
-    bottom: 10px;
-    left: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  /* Menu button styles */
-  .menu-button {
-    font-size: 24px;
-    cursor: pointer;
-    background: none;
-    border: none;
-    outline: none;
-    color: rgba(0, 0, 0, 0.6);
-  }
-  
-  /* Dark mode styles for the menu button */
-  body.dark-mode .menu-button {
-    color: rgba(255, 255, 255, 0.6);
-  }
-  
-  /* Formatting menu styles */
-  .formatting-menu {
-    display: none;
-    flex-direction: column;
-    align-items: flex-start;
-    background-color: #F4F4F4;
-    border-radius: 10px;
-    padding: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-    position: absolute;
-    bottom: 40px;
-    left: 0;
-  }
-  
-  /* Button and select styles inside the formatting menu */
-  .formatting-menu button, .formatting-menu select {
-    padding: 5px 10px;
-    margin: 5px 0;
-    font-size: 14px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    outline: none;
-    color: inherit;
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-  }
-  
-  /* Select element border styles */
-  .formatting-menu select {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Dark mode styles for select element */
-  body.dark-mode .formatting-menu select {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  /* Separator styles */
-  .separator {
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    margin: 10px 0;
-    width: 100%;
-  }
-  
-  /* Dark mode styles for separator */
-  body.dark-mode .separator {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  /* Toggle container styles */
-  .toggle-container {
-    display: flex;
-    align-items: center;
-    color: inherit;
-  }
-  
-  /* Toggle label styles */
-  .toggle-label {
-    font-size: 16px;
-    margin: 0 10px;
-  }
-  
-  /* Switch styles */
-  .switch {
-    position: relative;
-    display: inline-block;
-    width: 34px;
-    height: 20px;
-  }
-  
-  /* Switch input styles */
-  .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  
-  /* Slider styles */
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #333; /* Dark background for light theme */
-    transition: .4s;
-    border-radius: 10px;
-  }
-  
-  /* Dark mode styles for the slider */
-  body.dark-mode .slider {
-    background-color: #ccc; /* Light background for dark theme */
-  }
-  
-  /* Slider before element styles */
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 12px;
-    width: 12px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
-  }
-  
-  /* Checked slider styles */
-  input:checked + .slider {
-    background-color: #888; /* Dark background for light theme when checked */
-  }
-  
-  /* Dark mode checked slider styles */
-  body.dark-mode input:checked + .slider {
-    background-color: #bbb; /* Light background for dark theme when checked */
-  }
-  
-  /* Checked slider before element styles */
-  input:checked + .slider:before {
-    transform: translateX(14px);
-  }
-  
-  /* Count container styles */
-  .count-container {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    color: rgba(0, 0, 0, 0.6);
-  }
-  
-  /* Dark mode styles for count container */
-  body.dark-mode .count-container {
-    color: rgba(255, 255, 255, 0.6);
-  }
-  
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: rgba(245, 166, 35, .3);
+  transition: background-color 0.3s ease;
+}
+
+/* Dark mode styles for the body */
+body.dark-mode {
+  background-color: #333;
+}
+
+/* Editor styles */
+#editor {
+  width: 70%;
+  height: 85vh;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 16px;
+  background-color: transparent;
+  color: #000;
+  resize: none;
+  outline: none;
+  caret-color: black;
+  line-height: 1.6; /* Add this line to increase line-height */
+}
+
+/* Dark mode styles for the editor */
+#editor.dark-mode {
+  color: #fff;
+  caret-color: white;
+}
+
+/* Menu container styles */
+.menu-container {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Menu button styles */
+.menu-button {
+  font-size: 24px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  outline: none;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+/* Dark mode styles for the menu button */
+body.dark-mode .menu-button {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Formatting menu styles */
+.formatting-menu {
+  display: none;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: #F4F4F4;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  position: absolute;
+  bottom: 40px;
+  left: 0;
+}
+
+/* Button and select styles inside the formatting menu */
+.formatting-menu button, .formatting-menu select {
+  padding: 5px 10px;
+  margin: 5px 0;
+  font-size: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  color: inherit;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* Select element border styles */
+.formatting-menu select {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode styles for select element */
+body.dark-mode .formatting-menu select {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Separator styles */
+.separator {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin: 10px 0;
+  width: 100%;
+}
+
+/* Dark mode styles for separator */
+body.dark-mode .separator {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Toggle container styles */
+.toggle-container {
+  display: flex;
+  align-items: center;
+  color: inherit;
+}
+
+/* Toggle label styles */
+.toggle-label {
+  font-size: 16px;
+  margin: 0 10px;
+}
+
+/* Switch styles */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 20px;
+}
+
+/* Switch input styles */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Slider styles */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #333; /* Dark background for light theme */
+  transition: .4s;
+  border-radius: 10px;
+}
+
+/* Dark mode styles for the slider */
+body.dark-mode .slider {
+  background-color: #ccc; /* Light background for dark theme */
+}
+
+/* Slider before element styles */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 12px;
+  width: 12px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+/* Checked slider styles */
+input:checked + .slider {
+  background-color: #888; /* Dark background for light theme when checked */
+}
+
+/* Dark mode checked slider styles */
+body.dark-mode input:checked + .slider {
+  background-color: #bbb; /* Light background for dark theme when checked */
+}
+
+/* Checked slider before element styles */
+input:checked + .slider:before {
+  transform: translateX(14px);
+}
+
+/* Count container styles */
+.count-container {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+/* Dark mode styles for count container */
+body.dark-mode .count-container {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Style for checklist item */
+.checklist-item {
+  display: flex;
+  align-items: center;
+}
+
+.checklist-item input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.checklist-item.checked {
+  text-decoration: line-through;
+  color: gray;
+}
