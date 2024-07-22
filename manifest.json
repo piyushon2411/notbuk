@@ -7,15 +7,7 @@
     "newtab": "index.html"
   },
   "permissions": [
-    "storage",
-    "contextMenus",
-    "activeTab",
-    "scripting",
-    "tabs"
-  ],
-  "host_permissions": [
-    "http://*/",
-    "https://*/"
+    "storage"
   ],
   "icons": {
     "16": "images/favicon.ico",

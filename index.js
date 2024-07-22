@@ -162,4 +162,11 @@ checkboxBtn.addEventListener('click', () => {
       checkbox.parentElement.classList.remove('checked');
     }
   }
+
+  // Handle paste event to clear formatting
+  editor.addEventListener('paste', (event) => {
+    event.preventDefault();
+    const text = (event.clipboardData || window.clipboardData).getData('text');
+    document.execCommand('insertText', false, text);
+  });
 });
