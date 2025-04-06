@@ -2,6 +2,8 @@
 
 **NotBuk** is a simple note editor Chrome extension that allows users to take notes directly in a new tab. The notes are saved automatically and persist across browser sessions, making it a convenient tool for quick note-taking.
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ## Features
 
 - **Rich Text Editor**: Supports bold, italic, underline, and different font sizes.
@@ -66,7 +68,51 @@ To include the favicon in your extension:
 
    ```html
    <link rel="icon" href="images/favicon.ico" sizes="any">
+   ```
 
 ## Contributing
-Feel free to submit issues or pull requests if you find any bugs or have suggestions for improvements.
+
+We welcome contributions to NotBuk! Here's how you can help:
+
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/improvement`)
+3. Make your changes
+4. Commit your changes (`git commit -am 'Add some feature'`)
+5. Push to the branch (`git push origin feature/improvement`)
+6. Create a Pull Request
+
+### Development Setup
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/notbuk.git
+   cd notbuk
+   ```
+
+2. Make your changes and test them locally by loading the extension in Chrome.
+
+3. Ensure your code follows the existing style and formatting.
+
+### Code Style
+
+- Use consistent indentation (2 spaces)
+- Follow the existing code structure
+- Add comments for complex logic
+- Keep functions focused and single-purpose
+
+### Reporting Issues
+
+- Check if the issue already exists in the Issues section
+- Provide a clear description of the problem
+- Include steps to reproduce
+- Add screenshots if applicable
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Thanks to all contributors who have helped shape NotBuk
+- Inspired by the need for a simple, distraction-free note-taking experience
 
