@@ -3,11 +3,15 @@
   "name": "NotBuk",
   "version": "1.0",
   "description": "A simple note editor in your new tab.",
+  "background": {
+    "service_worker": "background.js"
+  },
   "chrome_url_overrides": {
     "newtab": "index.html"
   },
   "permissions": [
-    "storage"
+    "storage",
+    "contextMenus"
   ],
   "icons": {
     "16": "images/favicon.ico",

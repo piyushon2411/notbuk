@@ -8,7 +8,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: rgba(245, 166, 35, .3);
+  background-color: #f2f2f2;
   transition: background-color 0.3s ease;
 }
 

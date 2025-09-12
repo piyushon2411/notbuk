@@ -90,6 +90,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // React to external updates (e.g., context menu append) without clobbering
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== 'local') return;
+    if (changes.noteContent) {
+      const newVal = changes.noteContent.newValue || '';
+      if (newVal !== editor.innerHTML) {
+        editor.innerHTML = newVal;
+        // Re-bind checkbox listeners after HTML replacement
+        const checkboxes = editor.querySelectorAll('.checklist-item input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+          checkbox.addEventListener('change', handleCheckboxChange);
+          if (checkbox.checked) {
+            checkbox.parentElement.classList.add('checked');
+          }
+        });
+        updateCounts();
+      }
+    }
+  });
+
 // Add functionality to format text as checkboxes
 checkboxBtn.addEventListener('click', () => {
   // Get the current text selection from the window
