@@ -2,8 +2,6 @@
 
 **NotBuk** is a simple note editor Chrome extension that allows users to take notes directly in a new tab. The notes are saved automatically and persist across browser sessions, making it a convenient tool for quick note-taking.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
 ## Features
 
 - **Rich Text Editor**: Supports bold, italic, underline, and different font sizes.
@@ -107,12 +105,6 @@ We welcome contributions to NotBuk! Here's how you can help:
 - Include steps to reproduce
 - Add screenshots if applicable
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## Acknowledgments
 
-- Thanks to all contributors who have helped shape NotBuk
 - Inspired by the need for a simple, distraction-free note-taking experience
-
