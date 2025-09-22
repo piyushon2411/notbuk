@@ -1,6 +1,56 @@
+/* Material Design 3 Design Tokens */
+:root {
+  /* Color roles (Light) */
+  --md-sys-color-primary: #6750a4;
+  --md-sys-color-on-primary: #ffffff;
+  --md-sys-color-primary-container: #eaddff;
+  --md-sys-color-on-primary-container: #21005d;
+  --md-sys-color-secondary: #625b71;
+  --md-sys-color-on-secondary: #ffffff;
+  --md-sys-color-secondary-container: #e8def8;
+  --md-sys-color-on-secondary-container: #1d192b;
+  --md-sys-color-surface: #fffbfe;
+  --md-sys-color-on-surface: #1c1b1f;
+  --md-sys-color-surface-variant: #e7e0ec;
+  --md-sys-color-on-surface-variant: #49454f;
+  --md-sys-color-outline: #79747e;
+  --md-sys-color-background: #fdf8fd;
+
+  /* Shape */
+  --md-shape-corner-small: 8px;
+  --md-shape-corner-medium: 12px;
+  --md-shape-corner-large: 16px;
+
+  /* Elevation */
+  --md-elevation-1: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
+  --md-elevation-2: 0 2px 6px rgba(0,0,0,0.3), 0 2px 4px 1px rgba(0,0,0,0.15);
+
+  /* Typography */
+  --md-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
+}
+
+body.dark-mode {
+  /* Color roles (Dark) */
+  --md-sys-color-primary: #d0bcff;
+  --md-sys-color-on-primary: #381e72;
+  --md-sys-color-primary-container: #4f378b;
+  --md-sys-color-on-primary-container: #eaddff;
+  --md-sys-color-secondary: #ccc2dc;
+  --md-sys-color-on-secondary: #332d41;
+  --md-sys-color-secondary-container: #4a4458;
+  --md-sys-color-on-secondary-container: #e8def8;
+  --md-sys-color-surface: #1c1b1f;
+  --md-sys-color-on-surface: #e6e1e5;
+  --md-sys-color-surface-variant: #49454f;
+  --md-sys-color-on-surface-variant: #cac4d0;
+  --md-sys-color-outline: #938f99;
+  --md-sys-color-background: #1c1b1f;
+}
+
 /* General body styles */
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: var(--md-font-family);
   margin: 0;
   padding: 0;
   display: flex;
@@ -8,13 +58,13 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #f2f2f2;
+  background-color: var(--md-sys-color-background);
   transition: background-color 0.3s ease;
 }
 
 /* Dark mode styles for the body */
 body.dark-mode {
-  background-color: #333;
+  background-color: var(--md-sys-color-background);
 }
 
 /* Editor styles */
@@ -24,18 +74,58 @@ body.dark-mode {
   padding: 15px;
   box-sizing: border-box;
   font-size: 16px;
+  font-weight: 400;
   background-color: transparent;
-  color: #000;
+  color: var(--md-sys-color-on-surface);
   resize: none;
   outline: none;
   caret-color: black;
-  line-height: 1.6; /* Add this line to increase line-height */
+  line-height: 1.45;
+  overflow: auto;
+  position: relative; /* for absolute placeholder alignment */
+}
+
+/* Inline placeholder inside the first paragraph to align caret and hint */
+#editor[data-empty="true"] > p.nb-empty::before {
+  content: attr(data-ph);
+  color: color-mix(in srgb, var(--md-sys-color-on-surface) 45%, transparent);
+  pointer-events: none;
 }
 
 /* Dark mode styles for the editor */
 #editor.dark-mode {
   color: #fff;
   caret-color: white;
+}
+
+/* Typography inside the editor: natural margins and sizes */
+#editor p, #editor div {
+  margin: 0 0 0.4em;
+}
+#editor h1 {
+  font-size: 1.6em;
+  line-height: 1.2;
+  margin: 0.6em 0 0.5em;
+}
+#editor h2 {
+  font-size: 1.3em;
+  line-height: 1.25;
+  margin: 0.5em 0 0.45em;
+}
+#editor h3 {
+  font-size: 1.15em;
+  line-height: 1.3;
+  margin: 0.45em 0 0.4em;
+}
+
+/* Simple bullet list styling */
+#editor ul {
+  list-style-type: disc;
+  padding-left: 1.2em;
+  margin: 0 0 0.4em 0.8em;
+}
+#editor li {
+  margin: 0 0 0.25em;
 }
 
 /* Menu container styles */
@@ -55,23 +145,35 @@ body.dark-mode {
   background: none;
   border: none;
   outline: none;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--md-sys-color-on-surface-variant);
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  transition: background-color .2s ease;
 }
 
 /* Dark mode styles for the menu button */
 body.dark-mode .menu-button {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--md-sys-color-on-surface-variant);
 }
+
+.menu-button:hover { background: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, transparent); }
+.menu-button:active { background: color-mix(in srgb, var(--md-sys-color-on-surface) 12%, transparent); }
+
+/* Generic MD3 helpers */
+.md3-surface { background: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface); }
+.md3-elevated { box-shadow: var(--md-elevation-1); border: 1px solid var(--md-sys-color-outline); border-radius: var(--md-shape-corner-large); }
+.md3-icon-button { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; }
 
 /* Formatting menu styles */
 .formatting-menu {
   display: none;
   flex-direction: column;
   align-items: flex-start;
-  background-color: #F4F4F4;
-  border-radius: 10px;
+  background-color: var(--md-sys-color-surface);
+  border-radius: var(--md-shape-corner-large);
   padding: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--md-elevation-2);
   position: absolute;
   bottom: 40px;
   left: 0;
@@ -85,7 +187,7 @@ body.dark-mode .menu-button {
   background: none;
   border: none;
   cursor: pointer;
-  outline: none;
+  outline: none; /* provide custom focus below */
   color: inherit;
   display: flex;
   justify-content: space-between;
@@ -104,14 +206,14 @@ body.dark-mode .formatting-menu select {
 
 /* Separator styles */
 .separator {
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid var(--md-sys-color-outline);
   margin: 10px 0;
   width: 100%;
 }
 
 /* Dark mode styles for separator */
 body.dark-mode .separator {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--md-sys-color-outline);
 }
 
 /* Toggle container styles */
@@ -174,17 +276,17 @@ body.dark-mode .slider {
 }
 
 /* Checked slider styles */
-input:checked + .slider {
+.switch input:checked + .slider {
   background-color: #888; /* Dark background for light theme when checked */
 }
 
 /* Dark mode checked slider styles */
-body.dark-mode input:checked + .slider {
+body.dark-mode .switch input:checked + .slider {
   background-color: #bbb; /* Light background for dark theme when checked */
 }
 
 /* Checked slider before element styles */
-input:checked + .slider:before {
+.switch input:checked + .slider:before {
   transform: translateX(14px);
 }
 
@@ -204,17 +306,103 @@ body.dark-mode .count-container {
   color: rgba(255, 255, 255, 0.6);
 }
 
-/* Style for checklist item */
-.checklist-item {
+#versionBadge {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+/* Checklist styles removed (feature disabled) */
+
+/* Selection toolbar */
+.selection-toolbar {
+  position: absolute;
+  z-index: 1000;
+  background: var(--md-sys-color-surface);
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: var(--md-shape-corner-large);
+  padding: 4px;
+  display: flex;
+  gap: 4px;
+  box-shadow: var(--md-elevation-2);
+  user-select: none;
+  color: var(--md-sys-color-on-surface);
+}
+
+body.dark-mode .selection-toolbar {
+  background: var(--md-sys-color-surface);
+  border-color: var(--md-sys-color-outline);
+  color: var(--md-sys-color-on-surface);
+  box-shadow: var(--md-elevation-2);
+}
+
+.selection-toolbar button {
+  background: transparent;
+  border: none;
+  padding: 6px 8px;
+  cursor: pointer;
+  color: var(--md-sys-color-on-surface);
+  user-select: none;
+  border-radius: var(--md-shape-corner-small);
+}
+
+/* Accessible focus styles for keyboard navigation */
+.selection-toolbar button:focus-visible,
+.formatting-menu button:focus-visible,
+.formatting-menu select:focus-visible,
+#closeShortcuts:focus-visible,
+#shortcutsBtn:focus-visible,
+.menu-button:focus-visible {
+  outline: 2px solid #4c9ffe;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.selection-toolbar button.active {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+
+/* Hover for better affordance in both themes */
+.selection-toolbar button:hover {
+  background: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, transparent);
+  border-radius: 6px;
+}
+body.dark-mode .selection-toolbar button:hover {
+  background: color-mix(in srgb, var(--md-sys-color-on-surface) 10%, transparent);
+}
+
+.toolbar-sep {
+  height: 20px;
+  width: 1px;
+  background: var(--md-sys-color-outline);
+  align-self: center;
+}
+
+body.dark-mode .toolbar-sep {
+  background: var(--md-sys-color-outline);
+}
+
+/* Task list styles removed (feature disabled) */
+
+/* Shortcuts overlay */
+.shortcuts-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
   display: flex;
   align-items: center;
+  justify-content: center;
+  z-index: 2000;
 }
 
-.checklist-item input[type="checkbox"] {
-  margin-right: 10px;
+.shortcuts-content {
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  padding: 16px 20px;
+  border-radius: var(--md-shape-corner-large);
+  max-width: 480px;
+  width: 90%;
+  box-shadow: var(--md-elevation-2);
 }
 
-.checklist-item.checked {
-  text-decoration: line-through;
-  color: gray;
-}
+/* dark mode inherits tokens */

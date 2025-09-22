@@ -1,32 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>NotBuk</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Removed remote Google Fonts to comply with Chrome extension CSP -->
   <link rel="stylesheet" type="text/css" href="style.css">
-  <link rel="icon" href="images/favicon.ico" sizes="any"> <!-- Favicon link -->
-  <style>
-    body, div, button, select, option {
-      font-family: 'Roboto', sans-serif;
-    }
-  </style>
+  <link rel="icon" href="images/favicon.ico" sizes="any">
+  <link rel="alternate icon" type="image/svg+xml" href="images/favicon.svg">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="A simple note editor in your new tab.">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="theme-color" content="#f2f2f2" />
 </head>
 <body>
-  <div id="editor" contenteditable="true" placeholder="Write here ..."></div>
+  <div id="editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="NotBuk editor" data-placeholder="Write here ..."></div>
+  <!-- Floating selection toolbar -->
+  <div id="selectionToolbar" class="selection-toolbar md3-surface md3-elevated" style="display:none;" role="toolbar" aria-label="Formatting">
+    <button type="button" data-cmd="bold" aria-label="Bold" title="Bold (Ctrl/Cmd+B)"><b>B</b></button>
+    <button type="button" data-cmd="italic" aria-label="Italic" title="Italic (Ctrl/Cmd+I)"><i>I</i></button>
+    <button type="button" data-cmd="underline" aria-label="Underline" title="Underline (Ctrl/Cmd+U)"><u>U</u></button>
+    <button type="button" data-list="ul" aria-label="Bulleted List" title="Bulleted List (− then Space)">•</button>
+    <div class="toolbar-sep"></div>
+    <button type="button" data-heading="H1" aria-label="Heading 1" title="Heading 1 (Control+Option+1 on Mac / Ctrl+Alt+1 on Win/Linux)">H1</button>
+    <button type="button" data-heading="H2" aria-label="Heading 2" title="Heading 2 (Control+Option+2 on Mac / Ctrl+Alt+2 on Win/Linux)">H2</button>
+    <button type="button" data-heading="H3" aria-label="Heading 3" title="Heading 3 (Control+Option+3 on Mac / Ctrl+Alt+3 on Win/Linux)">H3</button>
+    <button type="button" data-heading="P" aria-label="Paragraph" title="Paragraph (Control+Option+0 on Mac / Ctrl+Alt+0 on Win/Linux)">Normal</button>
+    <div class="toolbar-sep"></div>
+    <button type="button" data-action="clear-format" aria-label="Clear Formatting" title="Clear all formatting on selection">Clear</button>
+  </div>
+
+  <!-- Bottom-left menu: theme + shortcuts -->
   <div class="menu-container">
-    <button class="menu-button">&#9776;</button>
-    <div class="formatting-menu" id="formattingMenu">
-      <button id="checkboxBtn">&#x25a2; Checkbox</button> <!-- Updated Checkbox Button -->
-      <button id="boldBtn"><b>Bold</b></button>
-      <button id="italicBtn"><i>Italics</i></button>
-      <button id="underlineBtn"><u>Underline</u></button>
-      <select id="fontSizeSelect">
-        <option value="1" style="font-size: 12px;">Small</option>
-        <option value="3" style="font-size: 16px;" selected>Medium</option>
-        <option value="5" style="font-size: 20px;">Large</option>
-        <option value="7" style="font-size: 24px;">Extra Large</option>
-      </select>
-      <div class="separator"></div>
+    <button class="menu-button md3-icon-button" aria-haspopup="true" aria-expanded="false" aria-controls="formattingMenu" title="Menu">&#9776;</button>
+    <div class="formatting-menu md3-surface md3-elevated" id="formattingMenu" role="menu">
       <div class="toggle-container">
         <span class="toggle-label">Light</span>
         <label class="switch">
@@ -35,11 +42,30 @@
         </label>
         <span class="toggle-label">Dark</span>
       </div>
+      <div class="separator"></div>
+      <button id="shortcutsBtn">Keyboard Shortcuts</button>
+    </div>
+  </div>
+
+  <!-- Shortcuts overlay -->
+  <div id="shortcutsOverlay" class="shortcuts-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="shortcutsTitle">
+    <div class="shortcuts-content">
+      <h3 id="shortcutsTitle">Keyboard Shortcuts</h3>
+      <ul>
+        <li><strong>Bold:</strong> Ctrl+B / Cmd+B</li>
+        <li><strong>Italic:</strong> Ctrl+I / Cmd+I</li>
+        <li><strong>Underline:</strong> Ctrl+U / Cmd+U</li>
+        <li><strong>H1 / H2 / H3:</strong> Control+Option+1/2/3 (Mac) or Ctrl+Alt+1/2/3 (Win/Linux)</li>
+        <li><strong>Paragraph:</strong> Control+Option+0 (Mac) or Ctrl+Alt+0 (Win/Linux)</li>
+        <li><strong>Hide Toolbar:</strong> Escape</li>
+      </ul>
+      <button id="closeShortcuts">Close</button>
     </div>
   </div>
   <div class="count-container">
     <span id="wordCount">Words: 0</span>
     <span id="charCount">Characters: 0</span>
+    <span id="versionBadge" title="NotBuk version"></span>
   </div>
   <script src="index.js"></script>
 </body>

@@ -1,14 +1,15 @@
 # NotBuk
 
-**NotBuk** is a simple note editor Chrome extension that allows users to take notes directly in a new tab. The notes are saved automatically and persist across browser sessions, making it a convenient tool for quick note-taking.
+**NotBuk** is a simple note editor Chrome extension that allows users to take notes directly in a new tab. Notes save automatically and persist across sessions.
 
 ## Features
 
-- **Rich Text Editor**: Supports bold, italic, underline, and different font sizes.
+- **Rich Text Editor**: Supports bold, italic, underline, and headings (H1–H3, Paragraph).
 - **Dark Mode**: Easily toggle between light and dark modes.
 - **Word and Character Count**: Displays real-time word and character count.
 - **Persistent Storage**: Notes are saved and retrieved from Chrome's local storage, ensuring they are available even after closing and reopening the browser.
 - **Minimalistic Design**: Clean and simple interface with a focus on usability.
+- **Context Menu Capture**: Right‑click selected text on any page and choose “Add to Notbuk Tab” to append it to your note securely.
 
 ## Installation
 
@@ -40,7 +41,7 @@ Defines the extension and its permissions. Key properties include `manifest_vers
 
 ### `index.html`
 
-The main HTML file that provides the structure for the new tab page. It includes links to stylesheets and scripts.
+The main HTML file that provides the structure for the new tab page. It includes local styles and scripts (no remote fonts or scripts, complying with MV3 CSP).
 
 ### `index.js`
 

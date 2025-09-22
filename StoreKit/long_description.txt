@@ -1,0 +1,23 @@
+NotBuk turns your New Tab into a clean, fast notebook.
+
+Type, format, and paste content with headings, bold/italic/underline, and bullet lists. While you browse, select text (and images) and add it to your notes via the right‑click menu. Everything is saved locally on your device — no account and no server calls.
+
+Highlights
+- Clean editor: predictable paragraphs, headings (H1–H3), bullets, clear formatting
+- Paste with formatting preserved (and safe)
+- Append selection from any page, including images and links
+- Dark theme (Material Design 3), accessible colors
+- Keyboard shortcuts for Mac/Windows/Linux
+- No data collected; notes never leave your device
+
+Privacy
+All notes are stored locally using Chrome storage. NotBuk does not collect or send any data.
+
+Permissions explained
+- storage: store your notes locally
+- contextMenus: add “Add to Notbuk Tab” to the right‑click menu when text is selected
+- activeTab + scripting: capture the selected HTML from the current page when you click the menu (user gesture required). No persistent content scripts, and no host permissions.
+
+Support
+If you have issues, include steps to reproduce and your Chrome/OS version.
+
