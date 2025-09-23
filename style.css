@@ -77,16 +77,19 @@ body.dark-mode {
   font-weight: 400;
   background-color: transparent;
   color: var(--md-sys-color-on-surface);
-  resize: none;
   outline: none;
   caret-color: black;
   line-height: 1.45;
   overflow: auto;
-  position: relative; /* for absolute placeholder alignment */
+  position: relative;
+  display: flex;              /* normalize vertical flow */
+  flex-direction: column;
+  align-items: stretch;
+  row-gap: 0.4em;             /* single source of spacing between blocks */
 }
 
 /* Inline placeholder inside the first paragraph to align caret and hint */
-#editor[data-empty="true"] > p.nb-empty::before {
+#editor[data-empty="true"] > p.nb-empty::after {
   content: attr(data-ph);
   color: color-mix(in srgb, var(--md-sys-color-on-surface) 45%, transparent);
   pointer-events: none;
@@ -99,8 +102,9 @@ body.dark-mode {
 }
 
 /* Typography inside the editor: natural margins and sizes */
-#editor p, #editor div {
-  margin: 0 0 0.4em;
+/* Remove margins; spacing comes from row-gap on #editor */
+#editor > p, #editor > div, #editor > ul, #editor > ol {
+  margin: 0;
 }
 #editor h1 {
   font-size: 1.6em;

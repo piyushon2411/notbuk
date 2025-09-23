@@ -798,6 +798,32 @@ document.addEventListener('DOMContentLoaded', () => {
     updatePlaceholderState();
   }, 100);
 
+  function updatePlaceholderState() {
+    const isEmpty = editor.getAttribute('data-empty') === 'true';
+    const phText = editor.getAttribute('data-placeholder') || 'Write here ...';
+    const first = editor.firstElementChild;
+    if (isEmpty) {
+      // Ensure exactly one empty paragraph with inline placeholder
+      if (!first || first.tagName !== 'P' || !first.classList.contains('nb-empty')) {
+        const p = document.createElement('P');
+        p.classList.add('nb-empty');
+        p.setAttribute('data-ph', phText);
+        p.appendChild(document.createTextNode('\u200B'));
+        editor.innerHTML = '';
+        editor.appendChild(p);
+        const sel = window.getSelection();
+        const r = document.createRange();
+        r.setStart(p.firstChild, 0); r.collapse(true);
+        sel.removeAllRanges(); sel.addRange(r);
+      } else {
+        first.setAttribute('data-ph', phText);
+      }
+    } else if (first && first.classList.contains('nb-empty')) {
+      first.classList.remove('nb-empty');
+      first.removeAttribute('data-ph');
+    }
+  }
+
   // Update counts initially
   updateCounts();
 
@@ -841,7 +867,7 @@ document.addEventListener('DOMContentLoaded', () => {
       editor.appendChild(p);
       const sel = window.getSelection();
       const r = document.createRange();
-      r.setStart(p.firstChild, 1); r.collapse(true);
+      r.setStart(p.firstChild, 0); r.collapse(true);
       sel.removeAllRanges(); sel.addRange(r);
       editor.setAttribute('data-empty','false');
       return;
