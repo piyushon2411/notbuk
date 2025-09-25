@@ -25,7 +25,8 @@ cp "$ROOT_DIR/images"/*.svg "$DIST_DIR/images/" 2>/dev/null || true
 cp "$ROOT_DIR/images"/*.ico "$DIST_DIR/images/" 2>/dev/null || true
 
 # Create zip
-cd "$DIST_DIR/.."
-rm -f "$PKG_NAME"
-zip -qr "$PKG_NAME" dist
-echo "Created $PKG_NAME in $(pwd)"
+# Zip the CONTENTS of dist so manifest.json is at the zip root
+cd "$DIST_DIR"
+rm -f "$ROOT_DIR/$PKG_NAME"
+zip -qr "$ROOT_DIR/$PKG_NAME" .
+echo "Created $PKG_NAME in $ROOT_DIR"

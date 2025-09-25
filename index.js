@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const shortcutsBtn = document.getElementById('shortcutsBtn');
   const shortcutsOverlay = document.getElementById('shortcutsOverlay');
   const closeShortcuts = document.getElementById('closeShortcuts');
+  let isComposing = false; // Track IME composition state to avoid intercepting Enter
 
   // --- Lightweight debug logger ---
   let debugEnabled = false;
@@ -122,6 +123,10 @@ document.addEventListener('DOMContentLoaded', () => {
     editor.classList.toggle('dark-mode', isDarkMode);
     chrome.storage.local.set({ darkMode: isDarkMode });
   });
+
+  // IME composition: don't interfere with Enter while composing
+  editor.addEventListener('compositionstart', () => { isComposing = true; });
+  editor.addEventListener('compositionend', () => { isComposing = false; });
 
   // Show/hide the simple menu (theme + shortcuts)
   menuButton.addEventListener('click', () => {
@@ -813,7 +818,9 @@ document.addEventListener('DOMContentLoaded', () => {
         editor.appendChild(p);
         const sel = window.getSelection();
         const r = document.createRange();
-        r.setStart(p.firstChild, 0); r.collapse(true);
+        // Place caret after the ZWSP so typing/Enter behave naturally
+        r.setStart(p.firstChild, Math.min(1, p.firstChild.nodeValue.length));
+        r.collapse(true);
         sel.removeAllRanges(); sel.addRange(r);
       } else {
         first.setAttribute('data-ph', phText);
@@ -827,11 +834,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Update counts initially
   updateCounts();
 
-  // Focus editor on load; place caret at start if empty, else end
-  focusEditorSmart();
-
-  // Ensure structural consistency: editor should contain blocks (<p>, headings, lists)
+  // Ensure structural consistency is installed before any focus occurs
   editor.addEventListener('focus', ensureBaselineStructure);
+
+  // Focus editor on load; place caret inside baseline paragraph when empty,
+  // otherwise at the end of content
+  focusEditorSmart();
   document.addEventListener('visibilitychange', () => { if (!document.hidden) scheduleNormalize(); });
 
   // Show version badge so testers can confirm the loaded build
@@ -848,10 +856,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function focusEditorSmart() {
     editor.focus();
+    const sel = window.getSelection();
+    if (isEditorVisiblyEmpty()) {
+      // Ensure we have a baseline <p> and place caret inside it
+      ensureBaselineStructure();
+      return;
+    }
     const r = document.createRange();
     r.selectNodeContents(editor);
-    r.collapse(isEditorVisiblyEmpty() ? true : false);
+    r.collapse(false); // place at end when not empty
+    sel.removeAllRanges();
+    sel.addRange(r);
+  }
+
+  // Ensure caret lands at a visible position at the start of a block.
+  // If the first text node begins with a zero-width space, position after it.
+  function placeCaretAtVisibleStart(block) {
     const sel = window.getSelection();
+    const r = document.createRange();
+    let node = block;
+    // Find first descendant (prefer text)
+    while (node && node.firstChild) node = node.firstChild;
+    if (!node || node.nodeType !== Node.TEXT_NODE) {
+      const t = document.createTextNode('\u200B');
+      block.insertBefore(t, block.firstChild);
+      node = t;
+    }
+    const text = node.nodeValue || '';
+    const offset = text.charCodeAt(0) === 0x200B ? 1 : 0;
+    r.setStart(node, Math.min(offset, text.length));
+    r.collapse(true);
     sel.removeAllRanges();
     sel.addRange(r);
   }
@@ -867,9 +901,11 @@ document.addEventListener('DOMContentLoaded', () => {
       editor.appendChild(p);
       const sel = window.getSelection();
       const r = document.createRange();
-      r.setStart(p.firstChild, 0); r.collapse(true);
+      // Place caret after the ZWSP so caret is visible
+      r.setStart(p.firstChild, Math.min(1, p.firstChild.nodeValue.length));
+      r.collapse(true);
       sel.removeAllRanges(); sel.addRange(r);
-      editor.setAttribute('data-empty','false');
+      editor.setAttribute('data-empty','true');
       return;
     }
     scheduleNormalize();
@@ -877,7 +913,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let normalizeTimer = null;
   function scheduleNormalize() {
-    if (normalizeTimer) cancelIdleCallback(normalizeTimer);
+    if (normalizeTimer) {
+      if (typeof cancelIdleCallback === 'function') cancelIdleCallback(normalizeTimer);
+      else clearTimeout(normalizeTimer);
+    }
     const runner = () => { try { normalizeEditorStructure(); } catch(_) {} normalizeTimer = null; };
     if ('requestIdleCallback' in window) normalizeTimer = requestIdleCallback(runner, { timeout: 200 });
     else normalizeTimer = setTimeout(runner, 100);
@@ -932,6 +971,20 @@ document.addEventListener('DOMContentLoaded', () => {
       editor.innerHTML = '';
       editor.appendChild(frag);
     }
+    // Safety: flatten any nested paragraphs accidentally introduced by browser ops
+    try {
+      const tops = Array.from(editor.children);
+      for (const top of tops) {
+        if (top.tagName !== 'P') continue;
+        const nested = top.querySelectorAll('p');
+        nested.forEach((np) => {
+          const newP = document.createElement('P');
+          while (np.firstChild) newP.appendChild(np.firstChild);
+          top.parentNode.insertBefore(newP, top.nextSibling);
+          np.remove();
+        });
+      }
+    } catch(_) {}
     restoreSelectionFromMarkers(markers);
     removeSelectionMarkers(markers);
     updatePlaceholderState();
@@ -969,7 +1022,8 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCounts();
     lastInputAt = Date.now();
     scheduleSave();
-    scheduleNormalize();
+    // Normalize immediately to prevent transient spacing glitches
+    try { normalizeEditorStructure(); } catch(_) {}
   });
 
   // Load content from local storage
@@ -1238,6 +1292,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // Normalize Enter to insert a new block consistently
     if (e.key === 'Enter' && !e.shiftKey && document.activeElement === editor) {
+      if (isComposing) return; // allow IME to commit
       e.preventDefault();
       // Exit inline formatting so the next line starts plain
       const inlineTags = ['STRONG','B','EM','I','U'];
@@ -1250,8 +1305,21 @@ document.addEventListener('DOMContentLoaded', () => {
         // Let the browser continue the list reliably
         try { if (document.execCommand) document.execCommand('insertParagraph'); } catch(_) {}
       } else {
-        // Always create a clean <p> block outside lists
-        insertParagraphBreak();
+        // Prefer native paragraph insertion for robust caret movement
+        let usedNative = false;
+        try {
+          if (document.execCommand) {
+            document.execCommand('insertParagraph');
+            usedNative = true;
+          }
+        } catch(_) { usedNative = false; }
+        if (!usedNative) {
+          // Fallback: manual split
+          insertParagraphBreak();
+        } else {
+          // After native insert, coerce DIV→P if needed and ensure caret is visible
+          normalizeAfterEnter();
+        }
       }
       scheduleSave(); updateCounts(); updateToolbarStates();
       return;
@@ -1275,7 +1343,13 @@ document.addEventListener('DOMContentLoaded', () => {
             blk.parentNode.replaceChild(ul, blk);
             const sel = window.getSelection();
             const nr = document.createRange();
-            if (li.firstChild && li.firstChild.nodeType === Node.TEXT_NODE) nr.setStart(li.firstChild, 0); else nr.setStart(li, 0);
+            if (li.firstChild && li.firstChild.nodeType === Node.TEXT_NODE) {
+              const v = li.firstChild.nodeValue || '';
+              const off = v.charCodeAt(0) === 0x200B ? 1 : 0;
+              nr.setStart(li.firstChild, Math.min(off, v.length));
+            } else {
+              nr.setStart(li, 0);
+            }
             nr.collapse(true);
             sel.removeAllRanges(); sel.addRange(nr);
             scheduleSave(); updateCounts(); updateToolbarStates();
@@ -1297,10 +1371,9 @@ document.addEventListener('DOMContentLoaded', () => {
           ul.removeChild(li);
           if (!ul.querySelector('li')) {
             const p = document.createElement('P');
-            p.appendChild(document.createTextNode(''));
+            p.appendChild(document.createTextNode('\u200B'));
             ul.parentNode.replaceChild(p, ul);
-            const r2 = document.createRange(); r2.setStart(p, 0); r2.collapse(true);
-            sel.removeAllRanges(); sel.addRange(r2);
+            placeCaretAtVisibleStart(p);
           } else if (prev) {
             const r2 = document.createRange();
             const endNode = prev.lastChild || prev; const len = endNode.nodeType === Node.TEXT_NODE ? endNode.nodeValue.length : endNode.childNodes.length;
@@ -1379,37 +1452,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!range.collapsed) {
       range.deleteContents();
     }
-    const block = getBlockAncestor(range.startContainer);
-    const newBlock = document.createElement('P');
+    let block = getBlockAncestor(range.startContainer);
+    const inheritTag = (blk) => (blk && blk !== editor && blk.tagName ? blk.tagName : 'P');
+    const newBlock = document.createElement(inheritTag(block));
+    // If no block found (should be rare), fall back to first block; if none, create one
+    if (!block || block === editor) block = editor.firstElementChild;
     if (!block || block === editor) {
-      // Split root contents into two paragraphs at the caret
-      const firstP = document.createElement('P');
-      const head = document.createRange();
-      head.setStart(editor, 0);
-      head.setEnd(range.startContainer, range.startOffset);
-      const headFrag = head.extractContents();
-      if (headFrag.childNodes.length) {
-        while (headFrag.firstChild) firstP.appendChild(headFrag.firstChild);
-      } else {
-        firstP.appendChild(document.createTextNode('\u200B'));
-      }
-      const tail = document.createRange();
-      tail.setStart(range.startContainer, range.startOffset);
-      tail.setEnd(editor, editor.childNodes.length);
-      const tailFrag = tail.extractContents();
-      if (tailFrag.childNodes.length) {
-        while (tailFrag.firstChild) newBlock.appendChild(tailFrag.firstChild);
-      } else {
-        newBlock.appendChild(document.createTextNode('\u200B'));
-      }
-      while (editor.firstChild) editor.removeChild(editor.firstChild);
-      editor.appendChild(firstP);
-      editor.appendChild(newBlock);
+      // No block exists yet; create one and position caret
+      const p = document.createElement('P');
+      p.appendChild(document.createTextNode('\u200B'));
+      editor.appendChild(p);
+      placeCaretAtVisibleStart(p);
+      return;
     } else {
-      // Split the current block into two paragraphs
+      // Split the current block into two blocks of the same tag
       const tail = document.createRange();
       tail.setStart(range.startContainer, range.startOffset);
-      tail.setEndAfter(block);
+      // Extract only the remainder of the current block's contents,
+      // not a cloned <p> wrapper (which would create nested paragraphs).
+      tail.setEnd(block, block.childNodes.length);
       const frag = tail.extractContents();
       if (frag && frag.childNodes && frag.childNodes.length) {
         while (frag.firstChild) newBlock.appendChild(frag.firstChild);
@@ -1418,16 +1479,27 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       block.parentNode.insertBefore(newBlock, block.nextSibling);
     }
-    const sel = window.getSelection();
-    const r = document.createRange();
-    if (newBlock.firstChild && newBlock.firstChild.nodeType === Node.TEXT_NODE) {
-      r.setStart(newBlock.firstChild, 0);
-    } else {
-      r.setStart(newBlock, 0);
-    }
-    r.collapse(true);
-    sel.removeAllRanges(); sel.addRange(r);
+    placeCaretAtVisibleStart(newBlock);
     editor.focus();
     dlog('insertParagraphBreak.end', {});
+  }
+
+  // After native insertParagraph, the browser may create a <div>. Normalize it
+  // to <p> and ensure the caret sits at a visible position in the new block.
+  function normalizeAfterEnter() {
+    const r = getEditorSelectionRange();
+    if (!r || !r.collapsed) return;
+    let blk = getBlockAncestor(r.startContainer);
+    if (!blk || blk === editor) return;
+    if (blk.tagName === 'DIV') {
+      const m = placeSelectionMarkers();
+      blk = convertBlockTag(blk, 'P');
+      restoreSelectionFromMarkers(m);
+      removeSelectionMarkers(m);
+    }
+    // Ensure layout exists (empty blocks might render with zero height)
+    if (blk && blk.firstChild == null) blk.appendChild(document.createElement('BR'));
+    // Make sure caret is not before a ZWSP
+    placeCaretAtVisibleStart(blk);
   }
 });
